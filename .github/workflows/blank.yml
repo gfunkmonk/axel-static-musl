@@ -19,6 +19,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x86_64, x86, aarch64, armhf, armv7]
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v4
@@ -27,6 +30,27 @@ jobs:
         echo $PATH
         chmod +x axel-static-musl.sh
         ./axel-static-musl.sh
+      env:
+        ARCH: ${{ matrix.arch }}
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: axel-${{ matrix.arch }}
+        path: dist/axel-${{ matrix.arch }}.tar.xz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    permissions:
+      contents: write
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: dist/
+        merge-multiple: true
 
     - name: Delete Previous Release
       run: |
