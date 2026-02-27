@@ -1,7 +1,8 @@
 #!/bin/bash
+set -euo pipefail
 
 ##install some dependencies
-sudo apt -y install wget curl strip
+sudo apt -y install wget curl binutils
 
 ##download alpine rootfs
 wget -c "https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-minirootfs-3.22.2-x86_64.tar.gz"
@@ -28,7 +29,6 @@ libpsl-dev \
 libuuid \
 curl \
 gawk \
-libpsl-dev \
 libidn2-static \
 openssl-libs-static \
 zlib-static \
@@ -37,12 +37,11 @@ flex \
 bison \
 libunistring-dev \
 libunistring-static \
-perl && curl -C - -L -O 'https://github.com/axel-download-accelerator/axel/releases/download/v2.17.14/axel-2.17.14.tar.gz'
-tar xf axel-2.17.14.tar.gz
-cd axel-2.17.14/
-./configure CC=gcc LDFLAGS='-static' CFLAGS='-O2'
-make
-exit"
+perl && curl -L -O 'https://github.com/axel-download-accelerator/axel/releases/download/v2.17.14/axel-2.17.14.tar.gz' && \
+tar xf axel-2.17.14.tar.gz && \
+cd axel-2.17.14/ && \
+./configure CC=gcc LDFLAGS='-static' CFLAGS='-O2' && \
+make -j\$(nproc)"
 mkdir -p dist
 cp ./pasta/axel-2.17.14/axel dist/
 strip dist/axel
