@@ -76,12 +76,14 @@ flex \
 bison \
 libunistring-dev \
 libunistring-static \
+upx \
 perl && curl -L -O 'https://github.com/axel-download-accelerator/axel/releases/download/v2.17.14/axel-2.17.14.tar.gz' && \
 tar xf axel-2.17.14.tar.gz && \
 cd axel-2.17.14/ && \
-./configure CC=gcc LDFLAGS='-static' CFLAGS='-O2' && \
+./configure CC=gcc LDFLAGS='-static' CFLAGS='-O3' && \
 make -j\$(nproc) && \
-strip axel"
+strip axel && \
+upx --ultra-brute axel"
 mkdir -p dist
 cp "./pasta/axel-2.17.14/axel" "dist/axel-${ARCH}"
 tar -C dist -cJf "dist/axel-${ARCH}.tar.xz" "axel-${ARCH}"
