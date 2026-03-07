@@ -44,7 +44,7 @@ esac
 TARBALL="${ALPINE_URL##*/}"
 
 echo -e "${AQUA}= install some dependencies${NC}"
-sudo apt -y install wget curl binutils
+sudo apt update -qy && sudo apt -y install wget curl binutils
 
 echo -e "${HELIOTROPE}= download alpine rootfs${NC}"
 wget -c "${ALPINE_URL}"
@@ -58,7 +58,7 @@ cp /etc/resolv.conf ./pasta/etc/
 
 echo -e "${TAWNY}= setup QEMU for cross-arch builds${NC}"
 if [ -n "${QEMU_ARCH}" ]; then
-  sudo apt -y install qemu-user-static
+  sudo apt update -qy && sudo apt -y install qemu-user-static
   sudo mkdir -p ./pasta/usr/bin/
   sudo cp "/usr/bin/qemu-${QEMU_ARCH}-static" "./pasta/usr/bin/"
 fi
