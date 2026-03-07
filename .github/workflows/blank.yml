@@ -28,7 +28,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: build axel
       run: |
-        echo $PATH
+        echo -e "\033[38;2;143;0;255m$PATH\033[0m"
         chmod +x axel-static-musl.sh
         ./axel-static-musl.sh
       env:
