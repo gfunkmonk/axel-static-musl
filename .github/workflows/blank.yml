@@ -11,10 +11,10 @@ on:
   pull_request:
     branches: [ main ]
     paths-ignore: [ '**/README.md' ]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
+env:
+  ALPINE_VERSION: "3.23.3"
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
@@ -33,10 +33,10 @@ jobs:
         key: alpine-rootfs-${{ env.ALPINE_VERSION }}-${{ matrix.arch }}
     - name: build axel
       run: |
-        PURPLE='\x1B[1;35m'
+        COLOR='\x1B[1;31m'
         NC='\x1B[0m'
 
-        echo -e "${PURPLE} $PATH ${NC}"
+        echo -e "${COLOR} $PATH ${NC}"
         chmod +x axel-static-musl.sh
         ./axel-static-musl.sh
       env:
@@ -63,21 +63,21 @@ jobs:
 
     - name: Delete Previous Release
       run: |
-          gh release delete "continuous-universal" --repo "${GITHUB_REPOSITORY}" --cleanup-tag -y || echo "No release to delete"
+        gh release delete "continuous-universal" --repo "${GITHUB_REPOSITORY}" --cleanup-tag -y || echo "No release to delete"
       env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       continue-on-error: true
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-          name: "Continuous universal"
-          tag_name: continuous-universal
-          prerelease: false
-          draft: false
-          generate_release_notes: false
-          make_latest: true
-          files: |
-            dist/*.tar.xz
+        name: "Continuous universal"
+        tag_name: continuous-universal
+        prerelease: false
+        draft: false
+        generate_release_notes: false
+        make_latest: true
+        files: |
+          dist/*.tar.xz
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
